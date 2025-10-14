@@ -1,0 +1,22 @@
+{
+  "configurations": [
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:2fa-app}",
+      "name": "Debug TwoFactorAuth",
+      "program": "${workspaceFolder:2fa-app}/.build/debug/TwoFactorAuth",
+      "preLaunchTask": "swift: Build Debug TwoFactorAuth"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:2fa-app}",
+      "name": "Release TwoFactorAuth",
+      "program": "${workspaceFolder:2fa-app}/.build/release/TwoFactorAuth",
+      "preLaunchTask": "swift: Build Release TwoFactorAuth"
+    }
+  ]
+}
