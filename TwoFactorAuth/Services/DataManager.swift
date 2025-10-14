@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
 class DataManager: ObservableObject {
     static let shared = DataManager()
@@ -16,9 +17,12 @@ class DataManager: ObservableObject {
     @Published var selectedAccount: Account?
     @Published var isAddingAccount = false
     @Published var isScanning = false
+    @Published private(set) var tick: Date = Date()
 
     private let keychain = KeychainService.shared
-    private var refreshTimer: Timer?
+    private var refreshCancellable: Any?
+    private var refreshTimer: Timer? // deprecated; kept if referenced elsewhere
+    private var timerCancellable: AnyCancellable?
 
     private init() {
         loadAccounts()
@@ -78,42 +82,6 @@ class DataManager: ObservableObject {
         }
     }
 
-    // MARK: - Import/Export
-
-    func exportAccounts(password: String) -> Data? {
-        return keychain.exportAccounts(accounts, password: password)
-    }
-
-    func importAccounts(from data: Data, password: String) -> Bool {
-        guard let importedAccounts = keychain.importAccounts(from: data, password: password) else {
-            return false
-        }
-
-        // Merge with existing accounts (avoid duplicates)
-        for account in importedAccounts {
-            if !accounts.contains(where: { $0.secret == account.secret && $0.issuer == account.issuer }) {
-                accounts.append(account)
-            }
-        }
-
-        saveAccounts()
-        return true
-    }
-
-    func importFromURI(_ uri: String) -> Bool {
-        guard let account = Account.from(uri: uri) else {
-            return false
-        }
-
-        // Check for duplicates
-        if accounts.contains(where: { $0.secret == account.secret && $0.issuer == account.issuer }) {
-            return false
-        }
-
-        addAccount(account)
-        return true
-    }
-
     // MARK: - Code Generation
 
     func generateCode(for account: Account) -> String {
@@ -135,48 +103,16 @@ class DataManager: ObservableObject {
     // MARK: - Timer for UI Updates
 
     private func startRefreshTimer() {
-        refreshTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            // This will trigger UI updates for progress indicators
-            self.objectWillChange.send()
-        }
+        // Publish a tick every second on the main run loop, updating a harmless published value
+        timerCancellable = Timer.publish(every: 1.0, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] date in
+                self?.tick = date
+            }
     }
 
     deinit {
+        timerCancellable?.cancel()
         refreshTimer?.invalidate()
-    }
-
-    // MARK: - Demo Data
-
-    func loadDemoAccounts() {
-        let demoAccounts = [
-            Account(
-                issuer: "GitHub",
-                accountName: "john.doe@example.com",
-                secret: "JBSWY3DPEHPK3PXP"
-            ),
-            Account(
-                issuer: "Google",
-                accountName: "john.doe@gmail.com",
-                secret: "HXDMVJECJJWSRB3H"
-            ),
-            Account(
-                issuer: "Microsoft",
-                accountName: "john.doe@outlook.com",
-                secret: "GEZDGNBVGY3TQOJQ"
-            ),
-            Account(
-                issuer: "Amazon AWS",
-                accountName: "admin",
-                secret: "MFRGGZDFMZTWQ2LK"
-            ),
-            Account(
-                issuer: "Dropbox",
-                accountName: "john.doe@company.com",
-                secret: "NNXWC3LQNRUXG2DJ"
-            )
-        ]
-
-        accounts = demoAccounts
-        saveAccounts()
     }
 }
