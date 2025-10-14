@@ -35,13 +35,13 @@ A native, secure, and modern 2FA (Two-Factor Authentication) app built with Swif
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/brutalharsh/2fa-app.git
-   cd 2fa-app
+   git clone https://github.com/brutalharsh/TwoFactorAuth.git
+   cd TwoFactorAuth
    ```
 
 2. **Open in Xcode:**
    - Open Xcode
-   - File → Open → Select the `2fa-app` folder
+   - File → Open → Select the `TwoFactorAuth` folder
    - Create a new macOS App project with SwiftUI
    - Replace the generated files with the source files
 
@@ -140,7 +140,7 @@ To test the app with demo accounts:
 ## Project Structure
 
 ```
-2fa-app/
+TwoFactorAuth/
 ├── TwoFactorAuth/
 │   ├── App/
 │   │   ├── TwoFactorAuthApp.swift    # Main app entry point
