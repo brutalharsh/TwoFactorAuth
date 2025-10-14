@@ -20,6 +20,15 @@ struct AddAccountView: View {
     @State private var showingError = false
     @State private var errorMessage = ""
 
+    @FocusState private var focusedField: Field?
+
+    enum Field: Hashable {
+        case issuer
+        case accountName
+        case secret
+        case period
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             // Header
@@ -46,10 +55,12 @@ struct AddAccountView: View {
                 Section("Account Information") {
                     TextField("Service/Issuer", text: $issuer)
                         .textFieldStyle(.roundedBorder)
+                        .focused($focusedField, equals: .issuer)
                         .help("The service provider (e.g., GitHub, Google)")
 
                     TextField("Account/Email", text: $accountName)
                         .textFieldStyle(.roundedBorder)
+                        .focused($focusedField, equals: .accountName)
                         .help("Your account name or email address")
                 }
 
@@ -62,6 +73,7 @@ struct AddAccountView: View {
                         TextEditor(text: $secret)
                             .font(.system(.body, design: .monospaced))
                             .frame(height: 60)
+                            .focused($focusedField, equals: .secret)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 6)
                                     .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
@@ -98,6 +110,7 @@ struct AddAccountView: View {
                         TextField("30", value: $period, format: .number)
                             .textFieldStyle(.roundedBorder)
                             .frame(width: 60)
+                            .focused($focusedField, equals: .period)
 
                         Text("seconds")
                             .foregroundColor(.secondary)
@@ -128,6 +141,10 @@ struct AddAccountView: View {
             .padding()
         }
         .frame(width: 500, height: 500)
+        .onAppear {
+            // Set initial focus to the issuer field
+            focusedField = .issuer
+        }
         .alert("Error", isPresented: $showingError) {
             Button("OK") { }
         } message: {
@@ -210,6 +227,8 @@ struct EditAccountView: View {
     @State private var showingError = false
     @State private var errorMessage = ""
 
+    @FocusState private var focusedField: AddAccountView.Field?
+
     init(account: Account) {
         self.account = account
         _issuer = State(initialValue: account.issuer)
@@ -246,9 +265,11 @@ struct EditAccountView: View {
                 Section("Account Information") {
                     TextField("Service/Issuer", text: $issuer)
                         .textFieldStyle(.roundedBorder)
+                        .focused($focusedField, equals: .issuer)
 
                     TextField("Account/Email", text: $accountName)
                         .textFieldStyle(.roundedBorder)
+                        .focused($focusedField, equals: .accountName)
                 }
 
                 Section("Authentication") {
@@ -260,6 +281,7 @@ struct EditAccountView: View {
                         TextEditor(text: $secret)
                             .font(.system(.body, design: .monospaced))
                             .frame(height: 60)
+                            .focused($focusedField, equals: .secret)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 6)
                                     .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
@@ -291,6 +313,7 @@ struct EditAccountView: View {
                         TextField("30", value: $period, format: .number)
                             .textFieldStyle(.roundedBorder)
                             .frame(width: 60)
+                            .focused($focusedField, equals: .period)
 
                         Text("seconds")
                             .foregroundColor(.secondary)

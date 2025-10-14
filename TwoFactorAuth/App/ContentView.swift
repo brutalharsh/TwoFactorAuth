@@ -12,14 +12,13 @@ struct ContentView: View {
     @State private var selectedAccountId: UUID?
     @State private var showingAddAccount = false
     @State private var showingScanner = false
-    @State private var showingImportExport = false
     @State private var columnVisibility = NavigationSplitViewVisibility.doubleColumn
 
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             // Sidebar with account list
             AccountListView(selectedAccountId: $selectedAccountId)
-                .navigationSplitViewColumnWidth(min: 250, ideal: 300, max: 400)
+                .navigationSplitViewColumnWidth(min: 300, ideal: 350, max: 450)
         } detail: {
             // Detail view
             if let account = dataManager.accounts.first(where: { $0.id == selectedAccountId }) {
@@ -39,20 +38,6 @@ struct ContentView: View {
                     Label("Add Account", systemImage: "plus")
                 }
                 .help("Manually add account")
-
-                Menu {
-                    Button(action: { showingImportExport = true }) {
-                        Label("Import/Export", systemImage: "square.and.arrow.down")
-                    }
-
-                    Divider()
-
-                    Button(action: { dataManager.loadDemoAccounts() }) {
-                        Label("Load Demo Accounts", systemImage: "wand.and.stars")
-                    }
-                } label: {
-                    Label("More", systemImage: "ellipsis.circle")
-                }
             }
         }
         .searchable(text: $dataManager.searchText, placement: .sidebar)
@@ -61,9 +46,6 @@ struct ContentView: View {
         }
         .sheet(isPresented: $showingScanner) {
             QRScannerView()
-        }
-        .sheet(isPresented: $showingImportExport) {
-            ImportExportView()
         }
         .onAppear {
             setupNotifications()
@@ -84,6 +66,8 @@ struct ContentView: View {
 // Empty state view when no account is selected
 struct EmptyStateView: View {
     @EnvironmentObject var dataManager: DataManager
+    @State private var showingAddAccount = false
+    @State private var showingScanner = false
 
     var body: some View {
         VStack(spacing: 20) {
@@ -107,12 +91,12 @@ struct EmptyStateView: View {
                         .padding(.top)
 
                     HStack(spacing: 20) {
-                        Button(action: { dataManager.isScanning = true }) {
+                        Button(action: { showingScanner = true }) {
                             Label("Scan QR Code", systemImage: "qrcode.viewfinder")
                         }
                         .buttonStyle(.borderedProminent)
 
-                        Button(action: { dataManager.isAddingAccount = true }) {
+                        Button(action: { showingAddAccount = true }) {
                             Label("Add Manually", systemImage: "plus.circle")
                         }
                         .buttonStyle(.bordered)
@@ -123,5 +107,11 @@ struct EmptyStateView: View {
         .padding(40)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(NSColor.windowBackgroundColor))
+        .sheet(isPresented: $showingAddAccount) {
+            AddAccountView()
+        }
+        .sheet(isPresented: $showingScanner) {
+            QRScannerView()
+        }
     }
 }
