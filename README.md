@@ -41,6 +41,10 @@ A native, secure, and modern 2FA (Two-Factor Authentication) app built with Swif
   </table>
 </div>
 
+## Download
+
+[Download TwoFactorAuth.dmg](TwoFactorAuth.dmg)
+
 ## Features
 
 ### Core Functionality
