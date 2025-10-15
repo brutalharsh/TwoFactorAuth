@@ -1,8 +1,45 @@
 # Two-Factor Authenticator for macOS
 
+<div align="center">
+  <img src="pic/applogo.png" alt="App Logo" width="128">
+</div>
+
 A native, secure, and modern 2FA (Two-Factor Authentication) app built with SwiftUI for macOS.
 
-![TwoFactorAuth App Screenshot](pic/app.png)
+## Screenshots
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="pic/appl.png" alt="App Overview" width="250">
+        <br><sub><b>App Overview</b></sub>
+      </td>
+      <td align="center">
+        <img src="pic/account.png" alt="Account Management" width="250">
+        <br><sub><b>Account Management</b></sub>
+      </td>
+      <td align="center">
+        <img src="pic/accview.png" alt="Account View" width="250">
+        <br><sub><b>Account Details</b></sub>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="pic/select.png" alt="Select Accounts" width="250">
+        <br><sub><b>Bulk Selection</b></sub>
+      </td>
+      <td align="center">
+        <img src="pic/addscan.png" alt="QR Scanner" width="250">
+        <br><sub><b>QR Code Scanner</b></sub>
+      </td>
+      <td align="center">
+        <img src="pic/addmanul.png" alt="Manual Entry" width="250">
+        <br><sub><b>Manual Account Entry</b></sub>
+      </td>
+    </tr>
+  </table>
+</div>
 
 ## Features
 
@@ -69,8 +106,6 @@ chmod +x build.sh
 ## Usage
 
 ### Adding Accounts
-
-![Add Account Screenshot](pic/add.png)
 
 **Method 1: QR Code Scanning**
 The QR scanner now offers multiple capture methods:
